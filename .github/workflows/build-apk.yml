@@ -1,1 +1,28 @@
+name: Build SchoolYar APK
 
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "SchoolOnline_PhoneBuild.zip"
+      - "build-apk.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract project
+        run: |
+          unzip -o SchoolOnline_PhoneBuild.zip -d source
+
+      - name: Find project
+        run: |
+          find source -name package.json -print
+
+      - name: Build instructions
+        run: |
+          echo "Project extracted successfully"
