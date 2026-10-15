@@ -1,0 +1,10 @@
+{
+  "name": "مدرسه‌یار آنلاین",
+  "short_name": "مدرسه‌یار",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f7f8fc",
+  "theme_color": "#5146e5",
+  "lang": "fa",
+  "dir": "rtl"
+}

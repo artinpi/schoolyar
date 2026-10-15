@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5146e5"><meta name="description" content="سامانه آنلاین مدیریت مدرسه، کلاس، تکلیف و اطلاعیه‌ها">
+<title>مدرسه‌یار | سامانه آنلاین مدرسه</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<section id="authScreen" class="auth-screen">
+  <div class="auth-brand"><span class="logo">م</span><div><b>مدرسه‌یار</b><small>سامانه آنلاین مدرسه</small></div></div>
+  <div class="auth-card">
+    <div class="auth-mark">🏫</div><h1 id="authTitle">ورود به مدرسه‌یار</h1><p class="muted" id="authHint">نام کاربری و رمز عبورت را وارد کن.</p>
+    <form id="loginForm">
+      <label>نام کاربری<input id="loginUsername" autocomplete="username" required minlength="3" placeholder="مثلاً ali.ahmadi"></label>
+      <label>رمز عبور<input id="loginPassword" type="password" autocomplete="current-password" required minlength="6" placeholder="حداقل ۶ نویسه"></label>
+      <button class="primary full" type="submit">ورود به حساب</button>
+    </form>
+    <form id="setupForm" class="hidden">
+      <div class="setup-warning">راه‌اندازی اولیه فقط برای مدیر اصلی مدرسه است. کد راه‌اندازی را از مسئول فنی دریافت کن.</div>
+      <label>نام مدیر<input id="adminName" required maxlength="80" placeholder="نام و نام خانوادگی"></label>
+      <label>نام کاربری مدیر<input id="adminUsername" required minlength="3" maxlength="30" pattern="[A-Za-z0-9._-]+" placeholder="مثلاً schooladmin"></label>
+      <label>رمز عبور مدیر<input id="adminPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="حداقل ۸ نویسه"></label>
+      <label>کد راه‌اندازی امن<input id="bootstrapSecret" type="password" required autocomplete="off" placeholder="کد تنظیم‌شده روی سرور"></label>
+      <button class="primary full" type="submit">ساخت حساب مدیر</button>
+    </form>
+    <p id="authMessage" class="feedback" role="status"></p>
+    <div class="auth-footer"><button class="text-btn" id="setupToggle" type="button">راه‌اندازی اولیه مدیر</button><span>ورود امن با حساب مدرسه</span></div>
+    <div id="configWarning" class="setup-warning hidden">تنظیمات Firebase هنوز وارد نشده‌اند. طبق راهنمای FIREBASE_SETUP_FA.md پروژه را پیکربندی کن.</div>
+  </div><p class="auth-caption">مدرسه‌یار · مدیریت مدرسه در یک جا</p>
+</section>
+<div id="appScreen" class="hidden">
+<header class="topbar"><div class="brand"><span class="logo">م</span><div><b>مدرسه‌یار</b><small>سامانه هوشمند مدرسه</small></div></div><div class="top-actions"><span class="status"><i></i><span id="connectionStatus">متصل</span></span><span id="userBadge" class="user-badge"></span><button class="secondary-btn" id="logoutBtn">خروج</button></div></header>
+<main class="layout"><aside class="sidebar"><div class="school-card"><div class="school-icon">🏫</div><div><b id="schoolName">مدرسه شما</b><small>سامانه مدرسه‌یار</small></div></div>
+<nav id="nav"><button class="nav-item active" data-page="home">▦ <span>داشبورد</span></button><button class="nav-item" data-page="tasks">✓ <span>تکالیف</span></button><button class="nav-item" data-page="announcements">♧ <span>اطلاعیه‌ها</span></button><button class="nav-item" data-page="messages">✉ <span>پیام‌رسان داخلی</span></button><button class="nav-item" data-page="users" data-role="admin">♙ <span>مدیریت کاربران</span></button></nav>
+<div class="sidebar-bottom"><div class="help-icon">?</div><div><b>راهنمای مدرسه‌یار</b><small>نسخه آنلاین</small></div></div></aside>
+<section class="content"><div class="welcome-row"><div><p class="eyebrow" id="todayLabel">مدرسه‌یار آنلاین</p><h1 id="greeting">خوش آمدی 👋</h1><p class="muted" id="subtitle">فعالیت‌های مدرسه را یک‌جا مدیریت کن.</p></div><span id="rolePill" class="role-pill"></span></div>
+<div class="notice-banner" id="welcomeBanner"><div class="notice-symbol">✦</div><div><b>به مدرسه‌یار خوش آمدی!</b><p>اطلاعات این صفحه از پایگاه داده آنلاین مدرسه دریافت می‌شود.</p></div><button class="close-notice" id="closeNotice" aria-label="بستن">×</button></div>
+<div class="stats" id="stats"></div><div class="section-head"><div><h2 id="mainTitle">نمای کلی</h2><p class="muted" id="sectionDescription">خلاصه‌ای از اطلاعات مدرسه</p></div><button class="primary" id="mainAction">＋ ایجاد مورد جدید</button></div>
+<div id="dynamicContent" class="dashboard-grid"><div class="panel"><p class="muted">در حال دریافت اطلاعات…</p></div></div>
+<footer>مدرسه‌یار · نسخه آنلاین · برای استفاده واقعی، قوانین امنیتی Firebase را طبق راهنما اعمال کنید.</footer></section></main></div>
+<div class="modal-backdrop hidden" id="modal"><div class="modal"><button class="modal-x" id="modalX" aria-label="بستن">×</button><h2 id="modalTitle">ایجاد مورد جدید</h2><p id="modalIntro" class="muted">اطلاعات را وارد کنید.</p><form id="modalForm"></form><p id="modalFeedback" class="feedback" role="status"></p></div></div>
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-functions-compat.js"></script>
+<script src="app.js"></script>
+</body></html>

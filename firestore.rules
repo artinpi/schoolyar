@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.role == 'admin'; }
+    function canPublish() { return signedIn() && (request.auth.token.role == 'admin' || request.auth.token.role == 'teacher'); }
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create, update, delete: if false; // فقط Cloud Functions با Admin SDK حساب/نقش می‌سازد.
+    }
+    match /usernames/{username} { allow read, write: if false; }
+    match /_system/{document} { allow read, write: if false; }
+    match /announcements/{id} {
+      allow read: if signedIn();
+      allow create: if canPublish() && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.title is string && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120;
+      allow update, delete: if isAdmin();
+    }
+    match /assignments/{id} {
+      allow read: if signedIn();
+      allow create: if canPublish() && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.title is string && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120;
+      allow update, delete: if isAdmin() || (signedIn() && request.auth.token.role == 'teacher' && resource.data.authorUid == request.auth.uid);
+    }
+
+    function isConversationParticipant() {
+      return signedIn() && request.auth.uid in resource.data.participants;
+    }
+    match /conversations/{conversationId} {
+      allow read: if isConversationParticipant();
+      // Only the callable server function creates conversation documents.
+      allow create, delete: if false;
+      allow update: if isConversationParticipant()
+        && request.resource.data.participants == resource.data.participants
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastMessage','lastSenderUid','updatedAt']);
+      match /messages/{messageId} {
+        function parentConversation() {
+          return get(/databases/$(database)/documents/conversations/$(conversationId));
+        }
+        function participant() {
+          return signedIn() && request.auth.uid in parentConversation().data.participants;
+        }
+        allow read: if participant();
+        allow create: if participant()
+          && request.resource.data.senderUid == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 2000
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "appId": "app.madreseyar.online",
+  "appName": "مدرسه‌یار",
+  "webDir": "www",
+  "server": { "androidScheme": "https" }
+}
